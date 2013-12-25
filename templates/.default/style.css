@@ -1,0 +1,21 @@
+.calendar {width: 750px;}
+
+.year {clear: left}
+.month {display: inline-block; margin: 5px 5px; border: 1px solid #DDD; padding: 5px 10px; height: 205px;}
+.month_name {font-size: 16px; margin: 7px 5px 10px 19px;}
+.month_data {text-align: center}
+.month_data td {padding: 2px 3px;}
+.month_data th {font-weight: normal; font-size: 12px; color: #999; padding-bottom: 4px; border-bottom: 1px solid #AAA;}
+.month_data th:first-child {border-right: 1px solid #AAA; }
+.month_num {font-size: 12px; float: right; padding-bottom: 3px; margin-bottom: 3px;}
+
+.month_data td.num_week {font-size: 9px; color: #AAA; border-right: 1px solid #AAA; padding-right: 4px;}
+
+.short_day {background:#ddd}
+.holyday, .week_end  {color: #D00; font-weight: bold; background:#ddd}
+.today {border: 1px solid #000; font-weight: bold;}
+
+
+.legend {margin-left: 6px;}
+.legend_item {clear: left}
+.legend_square {width: 22px; height: 19px; float: left; margin: -2px 5px 8px 0px; text-align: center; padding-top: 3px;}
