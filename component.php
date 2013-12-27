@@ -32,20 +32,13 @@ $arParams["today"] = array(
 	"day" =>   date("j"),
 );
 
-$year_start  = (int)$_GET["year"];
-$year_finish = (int)$_GET["year"];
-if(!$year_start || !$year_finish)
-{
-	$year_start  = date("Y");
-	$year_finish = date("Y");
-}
+$calendar = new BusinessCalendar($arParams['IBLOCK_HOLIDAY_ID'], $arParams['IBLOCK_HOLIDAY_PROPERTY']);
 
-$calendar = new CBusinessCalendar($arParams['IBLOCK_HOLIDAY_ID'], $arParams['IBLOCK_HOLIDAY_PROPERTY']);
-
-$arResult = $calendar->getCalendar($year_start, $year_finish);
+$year = (int)$_GET["year"] ? (int)$_GET["year"] : date("Y");
+$arResult = $calendar->getCalendar($year);
 
 $arParams["years"] = $calendar->getYearsNav();
-$arParams["year_select"] = $year_start;
+$arParams["year_select"] = $year;
 
 //echo "</pre>";
 $this->IncludeComponentTemplate();

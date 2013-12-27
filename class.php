@@ -1,7 +1,7 @@
 <?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();
 
 /**
-* CBusinessCalendar
+* BusinessCalendar
 * Класс, генерирующий производственный календарь на указанный период.
 * Праздники берутся из инфоблока
 * 
@@ -9,7 +9,7 @@
 * @version 1.0.0
 */
 
-class CBusinessCalendar
+class BusinessCalendar
 {
 	private $iblock_id;
 	private $porop_type_day;
@@ -36,10 +36,10 @@ class CBusinessCalendar
 	/**
 	* getCalendar Возвращает календарь на указанные года в виде массива
 	*/
-	public function getCalendar($year_start, $year_finish)
+	public function getCalendar($year)
 	{
-		$arCalendarBase = $this->generateCalendarBase($year_start, $year_finish);
-		$arCalendarHolidays = $this->getCalendarHolidays($year_start, $year_finish);
+		$arCalendarBase = $this->generateCalendarBase($year);
+		$arCalendarHolidays = $this->getCalendarHolidays($year);
 
 		$arCalendar = $this->addHolidaysIntoCalendarBase($arCalendarBase, $arCalendarHolidays);
 		return $arCalendar;
@@ -48,31 +48,30 @@ class CBusinessCalendar
 	/**
 	* generateCalendarBase Создаёт пустой календарь без праздников на указанные года
 	*/
-	private function generateCalendarBase($year_start, $year_finish)
+	private function generateCalendarBase($year)
 	{
 		$arCalendar = array();
-		for($year = $year_start;  $year <= $year_finish;  $year++)
-			for($month=1; $month<=12; $month++)
-			{
-				$first_day_stamp = mktime(0,0,0, $month, 1, $year);
-				$day_in_month = date('t', $first_day_stamp);
-				$last_day_stamp = $first_day_stamp + $day_in_month*self::SECOND_IN_DAY;
+		for($month=1; $month<=12; $month++)
+		{
+			$first_day_stamp = mktime(0,0,0, $month, 1, $year);
+			$day_in_month = date('t', $first_day_stamp);
+			$last_day_stamp = $first_day_stamp + $day_in_month*self::SECOND_IN_DAY;
 
-				for($day_stamp =  $first_day_stamp;
-					$day_stamp <= $last_day_stamp;
-					$day_stamp =  $day_stamp + self::SECOND_IN_DAY )
-						$arCalendar = $this->calendarArrayBuilder($day_stamp, $arCalendar, array());
-			}
+			for($day_stamp = $first_day_stamp;
+				$day_stamp < $last_day_stamp;
+				$day_stamp = $day_stamp + self::SECOND_IN_DAY )
+					$arCalendar = $this->calendarArrayBuilder($day_stamp, $arCalendar, array());
+		}
 
 		return $arCalendar;
 	} 
 	/**
 	* getCalendarHolidays Создаёт календарь из праздников на указанные года
 	*/
-	private function getCalendarHolidays($year_start, $year_finish)
+	private function getCalendarHolidays($year)
 	{
 		$arHolidays = array();
-		$arHolidaysFromDB = $this->getHolidaysFromDB($year_start, $year_finish);
+		$arHolidaysFromDB = $this->getHolidaysFromDB($year);
 		foreach ($arHolidaysFromDB as $arHolidayFromDB)
 		{
 			$day_start_stamp =  $arHolidayFromDB["ACTIVE_FROM_TIMESTAMP"];
@@ -110,17 +109,17 @@ class CBusinessCalendar
 		return $arCalendarBase;
 	}
 
-	private function getHolidaysFromDB($year_start, $year_finish)
+	private function getHolidaysFromDB($year)
 	{
 		$arHolidaysFromDB = array();
 		foreach ($this->arAllHolidaysFromDB as $arHoliday)
 		{
-			$year = $arHoliday["ACTIVE_FROM_YEAR"];
+			$year_inherit = $arHoliday["ACTIVE_FROM_YEAR"];
 
-			if ($year==$year_start || $year==$year_finish)
+			if ($year_inherit==$year)
 				$arHolidaysFromDB[] = $arHoliday;
 
-			if ($year > $year_finish)
+			if ($year_inherit > $year)
 				break;
 		}	
 		return $arHolidaysFromDB;
